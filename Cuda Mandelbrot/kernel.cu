@@ -17,7 +17,7 @@ int const threads = 64;
 
 int main ()
 {
-	sf::RenderWindow window (sf::VideoMode (1920, 1080), "Mandelbrot", sf::Style::Fullscreen);
+	sf::RenderWindow window (sf::VideoMode (1920, 1080), "Mandelbrot");
 
 	Color * video_canvas;
 	cudaMalloc (&video_canvas, 1920 * 1080 * 4);
@@ -98,17 +98,16 @@ __device__ int mandelbrot (double startReal, double startImag, int maximum) {
 		nextRe = zReal * zReal - zImag * zImag + startReal;
 		zImag = 2.0 * zReal * zImag + startImag;
 		zReal = nextRe;
-		if (zReal == startReal && zImag == startImag) { // a repetition indicates that the point is in the Mandelbrot set
-			return -1; // points in the Mandelbrot set are represented by a return value of -1
+		if (zReal == startReal && zImag == startImag) { 
 		}
 		counter += 1;
 	}
 
 	if (counter >= maximum) {
-		return -1; // -1 is used here to indicate that the point lies within the Mandelbrot set
+		return -1; 
 	}
 	else {
-		return counter; // returning the number of iterations allows for colouring
+		return counter; 
 	}
 }
 
@@ -127,8 +126,7 @@ __device__ Color spectrum (double iterations)
 		b = 0;
 	}
 	else {
-		// colour gradient:      Red -> Blue -> Green -> Red -> Black
-		// corresponding values:  0  ->  16  ->  32   -> 64  ->  127 (or -1)
+		
 		if (iterations < 16) {
 			r = 16 * (16 - iterations);
 			g = 0;
@@ -144,7 +142,7 @@ __device__ Color spectrum (double iterations)
 			g = 8 * (64 - iterations) - 1;
 			b = 0;
 		}
-		else { // range is 64 - 127
+		else {
 			r = 255 - (iterations - 64) * 4;
 			g = 0;
 			b = 0;
